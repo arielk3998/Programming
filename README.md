@@ -1,2 +1,2 @@
 # Programming
-This folder contains subfolders for each of the programming languages I have used so far.
+This top-level directory contains subfolders for each programming language I have utilized to date.
