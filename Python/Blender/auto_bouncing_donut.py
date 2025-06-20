@@ -17,7 +17,7 @@ try:
     ground.rigid_body.restitution = 0.7
 
     # Add donut (torus)
-    bpy.ops.mesh.primitive_torus_add(major_radius=1, minor_radius=0.4, location=(0, 0, 3))
+    bpy.ops.mesh.primitive_torus_add(major_radius=1, minor_radius=0.7, location=(0, 0, 5))
     donut = bpy.context.active_object
     donut.name = "Donut"
     bpy.ops.rigidbody.object_add()
