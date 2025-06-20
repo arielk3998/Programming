@@ -1,4 +1,5 @@
-import bpy
+import bpy # type: ignore
+import random
 from typing import Tuple, Optional
 
 
@@ -19,29 +20,11 @@ def add_donut(
     material_name: str = "DonutMaterial"
 ) -> Optional[bpy.types.Object]:
     """
-    Adds a torus ("donut") mesh to the scene with optional rigid body physics, smooth shading,
-    subdivision surface modifier, and a customizable material.
-
-    Args:
-        location (tuple): The (x, y, z) location for the donut.
-        major_radius (float): Major radius of the torus.
-        minor_radius (float): Minor radius of the torus.
-        name (str): Name to assign to the donut object.
-        rigid_body (bool): Whether to add rigid body physics.
-        mass (float): Rigid body mass.
-        friction (float): Rigid body friction.
-        restitution (float): Rigid body restitution (bounciness).
-        smooth_shading (bool): Whether to apply smooth shading.
-        subdivision_levels (int): Levels for the subdivision surface modifier.
-        material_color (tuple): RGBA color for the material.
-        roughness (float): Material roughness.
-        subsurface (float): Material subsurface scattering.
-        material_name (str): Name for the created material.
-
-    Returns:
-        bpy.types.Object or None: The created donut object, or None if creation failed.
+    Adds a realistic torus ("donut") mesh to the scene with imperfections, procedural bread texture,
+    frosting, and optional rigid body physics.
     """
     try:
+        # Add base donut
         bpy.ops.mesh.primitive_torus_add(
             major_radius=major_radius,
             minor_radius=minor_radius,
@@ -64,21 +47,111 @@ def add_donut(
         subdiv.levels = subdivision_levels
         subdiv.render_levels = subdivision_levels
 
+        # Add bread material with procedural bump and color variation
         mat = bpy.data.materials.new(name=material_name)
         mat.use_nodes = True
-        bsdf = mat.node_tree.nodes.get("Principled BSDF")
-        if bsdf:
-            bsdf.inputs["Base Color"].default_value = material_color
-            bsdf.inputs["Roughness"].default_value = roughness
-            if "Subsurface" in bsdf.inputs:
-                bsdf.inputs["Subsurface"].default_value = subsurface
+        nodes = mat.node_tree.nodes
+        links = mat.node_tree.links
+        nodes.clear()
 
-        if len(donut.data.materials) == 0:
-            donut.data.materials.append(mat)
-        else:
-            donut.data.materials[0] = mat
+        # Nodes for bread
+        output = nodes.new("ShaderNodeOutputMaterial")
+        bsdf = nodes.new("ShaderNodeBsdfPrincipled")
+        noise = nodes.new("ShaderNodeTexNoise")
+        bump = nodes.new("ShaderNodeBump")
+        colorramp = nodes.new("ShaderNodeValToRGB")
+        mapping = nodes.new("ShaderNodeMapping")
+        texcoord = nodes.new("ShaderNodeTexCoord")
 
+        # Setup bread color
+        colorramp.color_ramp.elements[0].color = (0.9, 0.7, 0.4, 1)
+        colorramp.color_ramp.elements[1].color = (0.7, 0.5, 0.2, 1)
+
+        # Node links for bread
+        links.new(texcoord.outputs['Object'], mapping.inputs['Vector'])
+        links.new(mapping.outputs['Vector'], noise.inputs['Vector'])
+        noise.inputs['Scale'].default_value = 8.0
+        links.new(noise.outputs['Fac'], colorramp.inputs['Fac'])
+        links.new(colorramp.outputs['Color'], bsdf.inputs['Base Color'])
+
+        # Bump for bread
+        links.new(noise.outputs['Fac'], bump.inputs['Height'])
+        bump.inputs['Strength'].default_value = 0.15
+        links.new(bump.outputs['Normal'], bsdf.inputs['Normal'])
+
+        # SSS for bread
+        bsdf.inputs['Subsurface'].default_value = 0.25
+        bsdf.inputs['Subsurface Color'].default_value = (1, 0.8, 0.6, 1)
+        bsdf.inputs['Roughness'].default_value = 0.45
+
+        links.new(bsdf.outputs['BSDF'], output.inputs['Surface'])
+
+        donut.data.materials.clear()
+        donut.data.materials.append(mat)
+
+        # Add frosting mesh (duplicate top half, shrinkwrap, offset)
+        bpy.ops.object.mode_set(mode='EDIT')
+        bpy.ops.mesh.select_all(action='DESELECT')
+        bpy.ops.mesh.select_random(percent=60, seed=random.randint(0,100))
+        bpy.ops.mesh.delete(type='FACE')
+        bpy.ops.object.mode_set(mode='OBJECT')
+        bpy.ops.object.duplicate()
+        frosting = bpy.context.active_object
+        frosting.name = f"{name}_Frosting"
+        bpy.ops.object.mode_set(mode='EDIT')
+        bpy.ops.mesh.select_all(action='SELECT')
+        bpy.ops.transform.shrink_fatten(value=0.05)
+        bpy.ops.object.mode_set(mode='OBJECT')
+
+        # Frosting material (glossy, colored, with bump)
+        frosting_mat = bpy.data.materials.new(name="FrostingMaterial")
+        frosting_mat.use_nodes = True
+        f_nodes = frosting_mat.node_tree.nodes
+        f_links = frosting_mat.node_tree.links
+        f_nodes.clear()
+
+        f_output = f_nodes.new("ShaderNodeOutputMaterial")
+        f_bsdf = f_nodes.new("ShaderNodeBsdfPrincipled")
+        f_noise = f_nodes.new("ShaderNodeTexNoise")
+        f_bump = f_nodes.new("ShaderNodeBump")
+        f_colorramp = f_nodes.new("ShaderNodeValToRGB")
+        f_mapping = f_nodes.new("ShaderNodeMapping")
+        f_texcoord = f_nodes.new("ShaderNodeTexCoord")
+
+        # Frosting color (pinkish)
+        f_colorramp.color_ramp.elements[0].color = (0.95, 0.6, 0.8, 1)
+        f_colorramp.color_ramp.elements[1].color = (0.8, 0.2, 0.4, 1)
+
+        f_links.new(f_texcoord.outputs['Object'], f_mapping.inputs['Vector'])
+        f_links.new(f_mapping.outputs['Vector'], f_noise.inputs['Vector'])
+        f_noise.inputs['Scale'].default_value = 12.0
+        f_links.new(f_noise.outputs['Fac'], f_colorramp.inputs['Fac'])
+        f_links.new(f_colorramp.outputs['Color'], f_bsdf.inputs['Base Color'])
+
+        # Bump for frosting
+        f_links.new(f_noise.outputs['Fac'], f_bump.inputs['Height'])
+        f_bump.inputs['Strength'].default_value = 0.08
+        f_links.new(f_bump.outputs['Normal'], f_bsdf.inputs['Normal'])
+
+        f_bsdf.inputs['Roughness'].default_value = 0.25
+        f_bsdf.inputs['Subsurface'].default_value = 0.1
+
+        f_links.new(f_bsdf.outputs['BSDF'], f_output.inputs['Surface'])
+
+        frosting.data.materials.clear()
+        frosting.data.materials.append(frosting_mat)
+
+        # Parent frosting to donut
+        frosting.parent = donut
+
+        # Optionally: Add sprinkles as particles (not included for brevity)
+
+        print("Donut creation complete! Reminder: Your render will be saved to the output path set in Blender's Render Properties (default: //render.png).")
         return donut
     except Exception as e:
         print(f"Failed to add donut: {e}")
         return None
+
+# Open Blender and run your script from the Scripting workspace,
+# or use the following command to run your script with Blender's Python:
+# blender --background --python "/home/spacecadet/Desktop/Master Folder/Ariel's/Repo/Programming/Python/Blender/Blender Global
