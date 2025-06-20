@@ -1,0 +1,47 @@
+const express = require('express');
+const router = express.Router();
+const glossaryController = require('../controllers/glossaryController');
+const auth = require('../middleware/auth');
+// Optionally, add express-validator for input validation
+const { body, param } = require('express-validator');
+
+// Get all glossary terms (public)
+router.get('/', glossaryController.getGlossary);
+
+// Get a single glossary term by ID (public)
+router.get('/:id', glossaryController.getGlossaryById);
+
+// Add a new glossary term (protected, with validation)
+router.post(
+  '/',
+  auth,
+  [
+    body('term').isString().notEmpty().withMessage('Term is required'),
+    body('definition').isString().notEmpty().withMessage('Definition is required'),
+    body('tags').optional().isArray().withMessage('Tags must be an array')
+  ],
+  glossaryController.addTerm
+);
+
+// Update a glossary term (protected, with validation)
+router.put(
+  '/:id',
+  auth,
+  [
+    param('id').isInt().withMessage('ID must be an integer'),
+    body('term').optional().isString().notEmpty(),
+    body('definition').optional().isString().notEmpty(),
+    body('tags').optional().isArray()
+  ],
+  glossaryController.updateTerm
+);
+
+// Delete a glossary term (protected)
+router.delete(
+  '/:id',
+  auth,
+  [param('id').isInt().withMessage('ID must be an integer')],
+  glossaryController.deleteTerm
+);
+
+module.exports = router;

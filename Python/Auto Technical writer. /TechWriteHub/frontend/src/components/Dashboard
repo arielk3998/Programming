@@ -1,0 +1,38 @@
+import React from 'react';
+
+const Dashboard = () => {
+    return (
+        <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+            <h1 className="text-4xl font-bold mb-4">Welcome to TechWriteHub</h1>
+            <p className="text-lg mb-8">Your one-stop solution for mastering technical writing.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="bg-white p-4 rounded shadow">
+                    <h2 className="text-xl font-semibold">Writing Tutorials</h2>
+                    <p>Explore structured lessons on clarity, audience targeting, and more.</p>
+                </div>
+                <div className="bg-white p-4 rounded shadow">
+                    <h2 className="text-xl font-semibold">Templates Library</h2>
+                    <p>Access downloadable and editable templates for common documents.</p>
+                </div>
+                <div className="bg-white p-4 rounded shadow">
+                    <h2 className="text-xl font-semibold">Live Writing Editor</h2>
+                    <p>Use our editor with tips and error checking to enhance your writing.</p>
+                </div>
+                <div className="bg-white p-4 rounded shadow">
+                    <h2 className="text-xl font-semibold">Style Guide Reference</h2>
+                    <p>Search our style guide for terminology and consistency.</p>
+                </div>
+                <div className="bg-white p-4 rounded shadow">
+                    <h2 className="text-xl font-semibold">Glossary Tool</h2>
+                    <p>Contribute to and explore a user-generated glossary.</p>
+                </div>
+                <div className="bg-white p-4 rounded shadow">
+                    <h2 className="text-xl font-semibold">Project Tracker</h2>
+                    <p>Manage your writing projects with our to-do list or Kanban board.</p>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default Dashboard;

@@ -1,0 +1,77 @@
+import React, { useState, useEffect } from 'react';
+
+const Glossary = () => {
+    const [glossaryTerms, setGlossaryTerms] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [newTerm, setNewTerm] = useState({ term: '', definition: '' });
+
+    useEffect(() => {
+        fetchGlossaryTerms();
+    }, []);
+
+    const fetchGlossaryTerms = async () => {
+        const response = await fetch('/api/glossary');
+        const data = await response.json();
+        setGlossaryTerms(data);
+    };
+
+    const handleAddTerm = async () => {
+        if (newTerm.term && newTerm.definition) {
+            await fetch('/api/glossary', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newTerm),
+            });
+            setNewTerm({ term: '', definition: '' });
+            fetchGlossaryTerms();
+        }
+    };
+
+    const filteredTerms = glossaryTerms.filter(term =>
+        term.term.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    return (
+        <div className="glossary-container">
+            <h1 className="text-2xl font-bold">Glossary</h1>
+            <input
+                type="text"
+                placeholder="Search terms..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="border p-2 rounded mb-4"
+            />
+            <ul>
+                {filteredTerms.map((item, index) => (
+                    <li key={index} className="border-b py-2">
+                        <strong>{item.term}:</strong> {item.definition}
+                    </li>
+                ))}
+            </ul>
+            <div className="add-term-form mt-4">
+                <h2 className="text-xl">Add New Term</h2>
+                <input
+                    type="text"
+                    placeholder="Term"
+                    value={newTerm.term}
+                    onChange={(e) => setNewTerm({ ...newTerm, term: e.target.value })}
+                    className="border p-2 rounded mr-2"
+                />
+                <input
+                    type="text"
+                    placeholder="Definition"
+                    value={newTerm.definition}
+                    onChange={(e) => setNewTerm({ ...newTerm, definition: e.target.value })}
+                    className="border p-2 rounded mr-2"
+                />
+                <button onClick={handleAddTerm} className="bg-blue-500 text-white p-2 rounded">
+                    Add Term
+                </button>
+            </div>
+        </div>
+    );
+};
+
+export default Glossary;

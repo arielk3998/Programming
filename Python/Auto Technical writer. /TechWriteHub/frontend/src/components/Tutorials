@@ -1,0 +1,19 @@
+import React from 'react';
+
+const Tutorials = () => {
+    return (
+        <div className="p-4">
+            <h1 className="text-2xl font-bold mb-4">Writing Tutorials</h1>
+            <p className="mb-2">Welcome to the TechWriteHub tutorials! Here you will find structured lessons covering various topics in technical writing.</p>
+            <ul className="list-disc pl-5">
+                <li>Clarity in Writing</li>
+                <li>Targeting Your Audience</li>
+                <li>Understanding Document Types (e.g., manuals, SOPs)</li>
+                <li>Grammar and Formatting Tips</li>
+            </ul>
+            <p className="mt-4">Select a tutorial to get started!</p>
+        </div>
+    );
+};
+
+export default Tutorials;

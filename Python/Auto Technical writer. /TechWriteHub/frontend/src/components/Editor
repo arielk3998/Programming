@@ -1,0 +1,32 @@
+import React, { useState } from 'react';
+
+const Editor = () => {
+    const [content, setContent] = useState('');
+
+    const handleChange = (event) => {
+        setContent(event.target.value);
+    };
+
+    const handleExport = (format) => {
+        // Logic to export content in the selected format (PDF, HTML, Markdown)
+    };
+
+    return (
+        <div className="editor-container">
+            <h1 className="text-2xl font-bold mb-4">Live Writing Editor</h1>
+            <textarea
+                className="w-full h-64 p-4 border rounded"
+                value={content}
+                onChange={handleChange}
+                placeholder="Start writing your document here..."
+            />
+            <div className="export-options mt-4">
+                <button onClick={() => handleExport('pdf')} className="mr-2 bg-blue-500 text-white p-2 rounded">Export as PDF</button>
+                <button onClick={() => handleExport('html')} className="mr-2 bg-green-500 text-white p-2 rounded">Export as HTML</button>
+                <button onClick={() => handleExport('markdown')} className="bg-yellow-500 text-white p-2 rounded">Export as Markdown</button>
+            </div>
+        </div>
+    );
+};
+
+export default Editor;
