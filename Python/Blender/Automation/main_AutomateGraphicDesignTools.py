@@ -22,6 +22,7 @@ Features:
 
 import sys
 import os
+sys.path.append('/home/spacecadet/Desktop/Master Folder/Ariel\'s/Repo/Programming/Python/Blender')
 
 # Configure the path to include the directory containing Blender global function scripts.
 SCRIPT_DIR = os.path.abspath(
@@ -46,7 +47,7 @@ if SCRIPT_DIR not in sys.path:
 # specific modules, ensuring compatibility with both Blender and external development tools.
 # ----------------------------------------------------------------------------------------
 
-from Blender_clear_scene_function import clear_scene  # type: ignore
+from Blender_Global_Functions.Blender_clear_scene_function import clear_scene  # type: ignore
 from Add_donut_function import add_donut  # type: ignore
 from Add_camera_function import add_camera, animate_camera_fly_through  # type: ignore
 from Add_light_function import add_light  # type: ignore
