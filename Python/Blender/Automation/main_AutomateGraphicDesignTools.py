@@ -48,14 +48,14 @@ if SCRIPT_DIR not in sys.path:
 # ----------------------------------------------------------------------------------------
 
 from Blender_Global_Functions.Blender_clear_scene_function import clear_scene  # type: ignore
-from Add_donut_function import add_donut  # type: ignore
-from Add_camera_function import add_camera, animate_camera_fly_through  # type: ignore
-from Add_light_function import add_light  # type: ignore
-from Add_ground_function import add_ground  # type: ignore
-from Set_render_settings_function import set_render_settings  # type: ignore
-from Bake_physics_function import bake_physics  # type: ignore
-from Render_animation_function import render_animation  # type: ignore
-from Frosting_and_sprinkles import add_icing_and_sprinkles  # type: ignore
+from Blender_Global_Functions.Add_donut_function import add_donut  # type: ignore
+from Blender_Global_Functions.Add_camera_function import add_camera, animate_camera_fly_through  # type: ignore
+from Blender_Global_Functions.Add_light_function import add_light  # type: ignore
+from Blender_Global_Functions.Add_ground_function import add_ground  # type: ignore
+from Blender_Global_Functions.Set_render_settings_function import set_render_settings  # type: ignore
+from Blender_Global_Functions.Bake_physics_function import bake_physics  # type: ignore
+from Blender_Global_Functions.Render_animation_function import render_animation  # type: ignore
+from Blender_Global_Functions.Frosting_and_sprinkles import add_icing_and_sprinkles  # type: ignore
 
 OUTPUT_PATH = "/tmp/render_output"  # Set your desired output path here
 
