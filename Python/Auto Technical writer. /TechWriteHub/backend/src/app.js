@@ -5,9 +5,9 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const { sequelize } = require('./models');
-const userRoutes = require('./userRoutes/userRoutes');
-const tutorialRoutes = require('./userRoutes/tutorialRoutes');
-const glossaryRoutes = require('./userRoutes/glossaryRoutes');
+const userRoutes = require('./userRoutes');
+const tutorialRoutes = require('./tutorialRoutes');
+const glossaryRoutes = require('./glossaryRoutes');
 
 dotenv.config();
 
