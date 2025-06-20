@@ -1,3 +1,24 @@
+"""
+================================================================================
+Blender Donut Scene Automation Script
+================================================================================
+
+This script automates the creation of a photorealistic donut scene in Blender,
+including ground, donut, camera, lighting, physics baking, and rendering.
+It demonstrates modular, robust, and readable Blender scripting practices.
+
+Features:
+- Clears the scene for a fresh start.
+- Adds a ground plane, realistic donut, camera, and lighting.
+- Animates the camera with an anime-style fly-through (if available).
+- Sets up render settings and output path.
+- Bakes physics for realism.
+- Renders the animation to the specified output directory.
+- Prints clear progress and completion messages.
+
+================================================================================
+"""
+
 import sys
 import os
 
@@ -26,25 +47,54 @@ if SCRIPT_DIR not in sys.path:
 
 from Blender_clear_scene_function import clear_scene  # type: ignore
 from Add_donut_function import add_donut  # type: ignore
-from Add_camera_function import add_camera  # type: ignore
-from Add_light_functoin import add_light  # type: ignore
+from Add_camera_function import add_camera, animate_camera_fly_through  # type: ignore
+from Add_light_function import add_light  # type: ignore
 from Add_ground_function import add_ground  # type: ignore
 from Set_render_settings_function import set_render_settings  # type: ignore
-from Bake_physics_funtion import bake_physics  # type: ignore
-from Render_animation_functoin import render_animation  # type: ignore
+from Bake_physics_function import bake_physics  # type: ignore
+from Render_animation_function import render_animation  # type: ignore
 
-output_path = "/tmp/render_output"  # Set your desired output path here
+OUTPUT_PATH = "/tmp/render_output"  # Set your desired output path here
 
 def main():
-    clear_scene(verbose=True)
-    ground = add_ground()
-    donut = add_donut()
-    camera = add_camera()
-    light = add_light()
-    set_render_settings(output_path)
-    bake_physics()
-    render_animation()
-    print("Script ran successfully!")
+    print("=== Blender Donut Scene Automation Started ===")
+    try:
+        clear_scene(verbose=True)
+        print("Scene cleared.")
+
+        ground = add_ground()
+        print("Ground added.")
+
+        donut = add_donut()
+        print("Donut added.")
+
+        camera = add_camera()
+        print("Camera added.")
+
+        # Animate camera if function is available
+        try:
+            animate_camera_fly_through(camera, donut)
+            print("Camera animation applied (anime-style fly-through).")
+        except Exception as e:
+            print(f"Camera animation skipped or failed: {e}")
+
+        light = add_light()
+        print("Lighting added.")
+
+        set_render_settings(OUTPUT_PATH)
+        print(f"Render settings configured. Output path: {OUTPUT_PATH}")
+
+        bake_physics()
+        print("Physics baked.")
+
+        render_animation()
+        print("Rendering animation...")
+
+        print("\n=== Script ran successfully! ===")
+        print(f"Your animation will be saved to: {OUTPUT_PATH}")
+        print("Check Blender's Render Properties for the exact output file name and format.")
+    except Exception as e:
+        print(f"\n[ERROR] Script failed: {e}")
 
 if __name__ == "__main__":
     main()
