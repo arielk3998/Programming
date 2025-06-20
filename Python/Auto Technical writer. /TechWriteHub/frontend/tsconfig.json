@@ -1,0 +1,44 @@
+{
+  // --- TypeScript Compiler Options for a Modern React Project ---
+  "compilerOptions": {
+    // Target modern JavaScript for browser compatibility
+    "target": "ES6",
+
+    // Use ESNext modules for compatibility with modern bundlers (Webpack, Vite, etc.)
+    "module": "ESNext",
+
+    // Use the new JSX transform (React 17+)
+    "jsx": "react-jsx",
+
+    // Enable all strict type-checking options for best safety
+    "strict": true,
+
+    // Use Node.js module resolution strategy
+    "moduleResolution": "node",
+
+    // Allow default imports from modules with no default export
+    "esModuleInterop": true,
+
+    // Skip type checking of declaration files for faster builds
+    "skipLibCheck": true,
+
+    // Ensure consistent casing in imports across the project
+    "forceConsistentCasingInFileNames": true,
+
+    // Allow importing .json files as modules
+    "resolveJsonModule": true,
+
+    // Ensure each file can be transpiled independently (important for Babel)
+    "isolatedModules": true,
+
+    // Do not emit output files (useful for projects using Babel or just type-checking)
+    "noEmit": true
+  },
+
+  // --- Project Structure ---
+  // Only include files in the src directory (standard for React apps)
+  "include": ["src"],
+
+  // Exclude build artifacts and dependencies
+  "exclude": ["node_modules", "build", "dist", "coverage"]
+}
