@@ -10,6 +10,7 @@ It demonstrates modular, robust, and readable Blender scripting practices.
 Features:
 - Clears the scene for a fresh start.
 - Adds a ground plane, realistic donut, camera, and lighting.
+- Adds a perfect icing layer and sprinkles to the donut.
 - Animates the camera with an anime-style fly-through (if available).
 - Sets up render settings and output path.
 - Bakes physics for realism.
@@ -53,6 +54,7 @@ from Add_ground_function import add_ground  # type: ignore
 from Set_render_settings_function import set_render_settings  # type: ignore
 from Bake_physics_function import bake_physics  # type: ignore
 from Render_animation_function import render_animation  # type: ignore
+from Frosting_and_sprinkles import add_icing_and_sprinkles  # type: ignore
 
 OUTPUT_PATH = "/tmp/render_output"  # Set your desired output path here
 
@@ -67,6 +69,16 @@ def main():
 
         donut = add_donut()
         print("Donut added.")
+
+        # Add icing and sprinkles to the donut
+        try:
+            icing, sprinkles = add_icing_and_sprinkles(donut)
+            if icing and sprinkles:
+                print("Icing and sprinkles added.")
+            else:
+                print("Icing and sprinkles could not be added.")
+        except Exception as e:
+            print(f"Icing and sprinkles skipped or failed: {e}")
 
         camera = add_camera()
         print("Camera added.")

@@ -1,4 +1,5 @@
-import bpy
+import bpy # type: ignore
+import os
 
 def render_animation(
     frame_start: int = 1,
@@ -17,19 +18,42 @@ def render_animation(
         file_format (str): Output file format ('FFMPEG', 'AVI_JPEG', etc.).
         verbose (bool): Whether to print status messages.
     """
-    scene = bpy.context.scene
-    scene.frame_start = frame_start
-    scene.frame_end = frame_end
-    scene.render.filepath = output_path
-    scene.render.image_settings.file_format = file_format
+    try:
+        scene = bpy.context.scene
 
-    if verbose:
-        print(f"Rendering animation from frame {frame_start} to {frame_end} to '{output_path}' as {file_format}.")
+        # Ensure output directory exists (if not using Blender's // relative path)
+        if not output_path.startswith("//"):
+            os.makedirs(bpy.path.abspath(output_path), exist_ok=True)
 
-    bpy.ops.render.render(animation=True)
+        # Store previous settings to restore after rendering
+        prev_frame_start = scene.frame_start
+        prev_frame_end = scene.frame_end
+        prev_filepath = scene.render.filepath
+        prev_format = scene.render.image_settings.file_format
 
-    if verbose:
-        print("Animation rendering completed.")
+        # Set render settings
+        scene.frame_start = frame_start
+        scene.frame_end = frame_end
+        scene.render.filepath = output_path
+        scene.render.image_settings.file_format = file_format
+
+        if verbose:
+            print(f"Rendering animation from frame {frame_start} to {frame_end} to '{output_path}' as {file_format}.")
+
+        bpy.ops.render.render(animation=True)
+
+        if verbose:
+            print("Animation rendering completed.")
+
+        # Restore previous settings
+        scene.frame_start = prev_frame_start
+        scene.frame_end = prev_frame_end
+        scene.render.filepath = prev_filepath
+        scene.render.image_settings.file_format = prev_format
+
+    except Exception as e:
+        if verbose:
+            print(f"Animation rendering failed: {e}")
 
 if __name__ == "__main__":
     render_animation()
